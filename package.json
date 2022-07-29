@@ -16,8 +16,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "vsolinfo.helloWorld",
-        "title": "Hello World"
+        "command": "vsolinfo.login",
+        "title": "Olinfo Login"
       }
     ]
   },
