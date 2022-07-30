@@ -11,18 +11,28 @@
   ],
   "activationEvents": [
     "onCommand:vsolinfo.login",
-    "onCommand:vsolinfo.logout"
+    "onCommand:vsolinfo.logout",
+    "onCommand:vsolinfo.setProblem",
+    "onCommand:vsolinfo.statement"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "vsolinfo.login",
-        "title": "Olinfo Login"
+        "title": "Olinfo: Login"
       },
       {
         "command": "vsolinfo.logout",
-        "title": "Olinfo Logout"
+        "title": "Olinfo: Logout"
+      },
+      {
+        "command": "vsolinfo.setProblem",
+        "title": "Olinfo: Set Problem"
+      },
+      {
+        "command": "vsolinfo.statement",
+        "title": "Olinfo: Show Statement"
       }
     ]
   },
