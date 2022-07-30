@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { state } from '../util/state';
-import fetch from 'cross-fetch';
+import fetch, { Headers } from 'cross-fetch';
 
 function notValid() {
     vscode.window.showErrorMessage("Not a valid olinfo URL / problem ID");
@@ -33,46 +33,62 @@ async function validateRequest(presumedID: string): Promise<boolean> {
     }
 }
 
+
 export async function setProblem() {
     if (!(await state.secrets.get('olinfoToken'))) {
         vscode.window.showErrorMessage("You're not logged in.");
         return;
     }
     
-    const IDorURL = await vscode.window.showInputBox({
-        title: "Problem ID or Problem URL"
-    });
-    if (!IDorURL) {
-        vscode.window.showWarningMessage("Operation cancelled.");
-        return;
-    }
+    const quickPick = vscode.window.createQuickPick()
+    quickPick.title = "Select a problem";
+    quickPick.items = await initItems("");
+    quickPick.show();
+    quickPick.onDidChangeValue(async (e) => {
+        quickPick.items = await initItems(e);
+    })
+    quickPick.onDidAccept(() => {
+        const problemID = quickPick.selectedItems[0].detail;
+        state.workspaceState.update('problemOlinfo', problemID);
+        vscode.window.showInformationMessage(`Problem "${problemID}" set succesfully for the current workspace.`);
+        quickPick.hide();
+    })
+    quickPick.onDidHide(() => {
+        quickPick.dispose();
+    })
 
-    var problemID : string;
+}
 
+async function initItems(search: string ) : Promise<vscode.QuickPickItem[]> {
     try {
-        // Parse the URL so I can get the problemID from it
-        const url = new URL(IDorURL);
-        if (url.host != "training.olinfo.it") {
-            // Host is not training.olinfo.it
-            notValid(); return;
+        const obj = {
+            action: "list",
+            first : 0,
+            last: 10,
+            search,
         }
-        const pathList = url.hash.split('/')
-        if (pathList.length < 3 || pathList[0] != '#' || pathList[1] != 'task') {
-            // Path is not a task path
-            notValid(); return;
-        }
+        const res = await fetch("https://training.olinfo.it/api/task", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(obj)
+        });
 
-        // 3rd parameter in the path is the problemID
-        problemID = pathList[2];
-    } catch (_err) {
-        // Check if it's an actual problemID by trying to access it.
-        const result = await validateRequest(IDorURL);
-        if (!result) {
-            notValid(); return;
+        const resJSON = await res.json();
+        if (!resJSON.success) throw Error("WHY DID THIS NOT WORK AAAAAAA");
+
+        const arr = resJSON.tasks;
+        var itemsArr: vscode.QuickPickItem[] = [];
+        for (let i = 0; i < arr.length; i++) {
+            itemsArr[i] = {
+                label: arr[i].title,
+                detail: arr[i].name
+            };
         }
-        problemID = IDorURL;
+        return itemsArr;
+    } catch (err) {
+        console.error(err);
+        return [];
     }
-
-    state.workspaceState.update('problemOlinfo', problemID);
-    vscode.window.showInformationMessage(`Problem "${problemID}" set succesfully for the current workspace.`);
 }
