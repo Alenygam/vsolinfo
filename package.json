@@ -13,7 +13,8 @@
     "onCommand:vsolinfo.login",
     "onCommand:vsolinfo.logout",
     "onCommand:vsolinfo.setProblem",
-    "onCommand:vsolinfo.statement"
+    "onCommand:vsolinfo.statement",
+    "onCommand:vsolinfo.submit"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -33,6 +34,10 @@
       {
         "command": "vsolinfo.statement",
         "title": "Olinfo: Show Statement"
+      },
+      {
+        "command": "vsolinfo.submit",
+        "title": "Olinfo: Submit Code"
       }
     ]
   },
