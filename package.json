@@ -4,6 +4,10 @@
   "description": "An extension that interfaces with the Italian Olympiads of Informatics (OII/olinfo) training site.",
   "version": "0.0.1",
   "publisher": "Alenygam",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Alenygam/vsolinfo"
+  },
   "engines": {
     "vscode": "^1.69.0"
   },
