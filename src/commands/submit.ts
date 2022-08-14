@@ -20,6 +20,13 @@ export async function submit() {
         return;
     }
 
+    const language = vscode.window.activeTextEditor.document.languageId;
+    if (language !== 'c' && language !== 'cpp') {
+        vscode.window.showWarningMessage("Only supported languages by the extension are c/c++");
+        return;
+    }
+
+
     const text = vscode.window.activeTextEditor.document.getText();
     const obj : any = {
         action: "new",
@@ -43,8 +50,12 @@ export async function submit() {
             body: JSON.stringify(obj)
         })
 
-        console.log(await res.json());
+        const data = await res.json();
+        if (!data.success) throw new Error("Request unsuccessful (whatever that means)");
+
+        vscode.window.showInformationMessage("Code submitted successfully")
     } catch (err) {
         console.error(err);
+        vscode.window.showErrorMessage("Could not submit code");
     }
 }
