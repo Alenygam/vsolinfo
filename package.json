@@ -3,6 +3,7 @@
   "displayName": "vsOlinfo",
   "description": "An extension that interfaces with the Italian Olympiads of Informatics (OII/olinfo) training site.",
   "version": "0.0.1",
+  "publisher": "Alenygam",
   "engines": {
     "vscode": "^1.69.0"
   },
