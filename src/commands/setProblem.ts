@@ -2,38 +2,6 @@ import * as vscode from 'vscode';
 import { state } from '../util/state';
 import fetch, { Headers } from 'cross-fetch';
 
-function notValid() {
-    vscode.window.showErrorMessage("Not a valid olinfo URL / problem ID");
-}
-
-// Returns true if successful, false if not...
-async function validateRequest(presumedID: string): Promise<boolean> {
-    try {
-        const obj = {
-            name: presumedID,
-            action: "get",
-        };
-        const res = await fetch('https://training.olinfo.it/api/task', {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(obj),
-        })
-
-        // Api is trash always returns status 200
-        const resJson = await res.json();
-        if (!resJson.success) throw Error("Request apparently not successful");
-
-        return true;
-    } catch (err) {
-        notValid();
-        console.error(err);
-        return false;
-    }
-}
-
-
 export async function setProblem() {
     if (!(await state.secrets.get('olinfoToken'))) {
         vscode.window.showErrorMessage("You're not logged in.");
