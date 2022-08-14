@@ -14,7 +14,8 @@
     "onCommand:vsolinfo.logout",
     "onCommand:vsolinfo.setProblem",
     "onCommand:vsolinfo.statement",
-    "onCommand:vsolinfo.submit"
+    "onCommand:vsolinfo.submit",
+    "onCommand:vsolinfo.getSubmissions"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -38,6 +39,10 @@
       {
         "command": "vsolinfo.submit",
         "title": "Olinfo: Submit Code"
+      },
+      {
+        "command": "vsolinfo.getSubmissions",
+        "title": "Olinfo: Get Submissions"
       }
     ]
   },
