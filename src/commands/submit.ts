@@ -28,13 +28,40 @@ export async function submit() {
 
 
     const text = vscode.window.activeTextEditor.document.getText();
+
+
+    var format: string;
+    try {
+        const objProb = {
+            action: 'get',
+            name: problemID
+        }
+
+        const res = await fetch("https://training.olinfo.it/api/task", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(objProb)
+        })
+
+        const data = await res.json();
+        if (!data.success) throw new Error("BRUH")
+
+        format = data.submission_format[0];
+    } catch (err) {
+        console.error(err);
+        vscode.window.showErrorMessage("Could not fetch this problem...");
+        return;
+    }
+
     const obj : any = {
         action: "new",
         files: {},
         task_name: problemID
     }
 
-    obj.files[`${problemID}.%l`] = {
+    obj.files[format] = {
         data: Buffer.from(text).toString('base64'),
         filename: "ace.cpp",
         language: "C++11 / g++"
